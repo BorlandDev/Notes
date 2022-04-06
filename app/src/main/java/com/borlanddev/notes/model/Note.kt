@@ -6,5 +6,6 @@ import java.util.*
 data class Note (@PrimaryKey val id: UUID = UUID.randomUUID(),
                  var title: String = "",
                  var description: String = "",
-                 var date: Date = Date() )
+                 var date: String = "10.07.21" )
 
+// Date = Date()
