@@ -4,8 +4,11 @@ package com.borlanddev.notes.controller
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.borlanddev.notes.R
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , NoteListFragment.Callbacks { // ВРЕМЕННАЯ РЕАЛИЗАЦИЯ НАВИГАЦИИ
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -18,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         // создание экземпляра нашего фрагмента (если до этого он не существовал)
         if (currentFragment == null) {
-            val fragment = ListFragment.newInstance()
+            val fragment = NoteListFragment.newInstance()
 
             // создает и закрпляет транзакцию фрагмента
             supportFragmentManager
@@ -27,6 +30,22 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
     }
+
+
+
+    // ВРЕМЕННАЯ РЕАЛИЗАЦИЯ НАВИГАЦИИ
+    override fun onNoteSelected(noteId: UUID) {
+
+        // передаем информацию о выбранной заметке в списке
+        val fragment = NoteDetailsFragment.newInstance(noteId)
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack("Реализация кнопки назад - вернет к предыдущему фрагменту")
+            .commit()
+    }
+
 
 
 }

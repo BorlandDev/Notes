@@ -9,7 +9,7 @@
     >
 
     <EditText
-        android:id="@+id/title_note"
+        android:id="@+id/note_title"
 
         style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:textSize="25sp" />
 
     <EditText
-        android:id="@+id/text_note"
+        android:id="@+id/note_text"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"

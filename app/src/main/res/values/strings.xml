@@ -3,8 +3,10 @@
 
     <string name="title_note">Title</string>
     <string name="description_note">Description</string>
+
     <string name="hint_title_note">Enter title</string>
     <string name="hint_description_note">Start typing your note..</string>
-    <string name="save_action">Save note</string>
-    <string name="add_note">Add note</string>
+
+    <string name="save_note_button">Save note</string>
+    <string name="new_note_FAB">New note</string>
 </resources>
