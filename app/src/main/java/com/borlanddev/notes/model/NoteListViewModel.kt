@@ -16,4 +16,6 @@ class NoteListViewModel: ViewModel() {
         noteRepository.newNote(note)
     }
 
+
+
 }

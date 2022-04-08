@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -13,6 +14,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.Note
 import com.borlanddev.notes.model.NoteDetailsViewModel
+import com.borlanddev.notes.model.NoteListViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -20,18 +23,160 @@ private const val ARG_NOTE_ID = "noteId"
 
 class NoteDetailsFragment: Fragment() {
 
-
     private lateinit var note: Note
     private lateinit var noteTitle: EditText
     private lateinit var noteText: EditText
+
 
     private val noteDetailsViewModel by lazy {
         ViewModelProviders.of(this).get(NoteDetailsViewModel::class.java)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        note = Note()
+
+        // Явно указываем фрагмент менеджеру вызвывать функию обртаного вызова
+        setHasOptionsMenu(true)
+
+    }
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        val view = inflater.inflate(R.layout.fragment_details_note, container, false)
+
+        noteTitle = view.findViewById(R.id.note_title) as EditText
+        noteText = view.findViewById(R.id.note_text) as EditText
+
+        return view
+
+    }
 
 
 
+        override fun onStart() {
+            super.onStart()
+
+            // создаем анонимный класс реализующий интерфейс TextWatcher (Слушатель/наблюдатель)
+            val titleWatcher = object : TextWatcher {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?, start: Int, count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    sequence: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    // преобразует ввод пользователя из CharSequence в String
+                    note.title = sequence.toString()
+                }
+
+                override fun afterTextChanged(sequence: Editable?) {}
+            }
+
+            // Добавление слушателя на Заголовок
+            noteTitle.addTextChangedListener(titleWatcher)
+
+            val textWatcher = object : TextWatcher {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?, start: Int, count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    sequence: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    // преобразует ввод пользователя из CharSequence в String
+                    note.description = sequence.toString()
+                }
+
+                override fun afterTextChanged(sequence: Editable?) {}
+            }
+            // Добавление слушателя на Текст заметки
+            noteText.addTextChangedListener(textWatcher)
+        }
+
+
+        // Вызывается когда возникает необходимость в меню
+        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+            super.onCreateOptionsMenu(menu, inflater)
+
+            // запонялем меню
+            inflater.inflate(R.menu.fragment_details_action, menu)
+
+        }
+
+
+        // Когда пользователь выбирает команду в меню фрагмент получает обратный вызов этой функции
+        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+            // реагируем в зависимости от выбора команды в меню
+            return when (item.itemId) {
+
+                R.id.save_note_button -> {
+
+                    noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
+
+                    Toast.makeText(context, "Saved note", Toast.LENGTH_SHORT).show()
+
+
+                    true
+                } // флаг - дальнейшая обработка менюшки не требуется
+
+                else -> return super.onOptionsItemSelected(item)
+            }
+        }
+
+
+        override fun onStop() {
+            super.onStop()
+
+            // При закрытии фрагмента сохраняем введенный текст
+            noteDetailsViewModel.saveNote(note)
+        }
+
+
+
+        companion object {
+
+            fun newInstance() = NoteDetailsFragment()
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    /*
+
+    private lateinit var note: Note
+    private lateinit var noteTitle: EditText
+    private lateinit var noteText: EditText
+
+
+    private val noteDetailsViewModel by lazy {
+        ViewModelProviders.of(this).get(NoteDetailsViewModel::class.java)
+    }
 
 
 
@@ -51,13 +196,7 @@ class NoteDetailsFragment: Fragment() {
         // Загружаем выбранную заметку
         noteDetailsViewModel.loadNote(noteId)
 
-
-
     }
-
-
-
-
 
 
 
@@ -71,7 +210,6 @@ class NoteDetailsFragment: Fragment() {
 
         noteTitle = view.findViewById(R.id.note_title) as EditText
         noteText = view.findViewById(R.id.note_text) as EditText
-
 
         return view
     }
@@ -125,7 +263,7 @@ class NoteDetailsFragment: Fragment() {
 
             }
 
-            override fun afterTextChanged(sequance: Editable?) {}
+            override fun afterTextChanged(sequence: Editable?) {}
         }
 
         noteTitle.addTextChangedListener(titleWatcher)
@@ -147,11 +285,14 @@ class NoteDetailsFragment: Fragment() {
 
             }
 
-            override fun afterTextChanged(sequance: Editable?) {}
+            override fun afterTextChanged(sequence: Editable?) {}
         }
 
 
+
         noteText.addTextChangedListener(textWatcher)
+
+
 
     }
 
@@ -220,6 +361,8 @@ class NoteDetailsFragment: Fragment() {
             val args = Bundle().apply {
                 putSerializable(ARG_NOTE_ID, noteId)
             }
+
+            // Прикреппляем данные к текущему фрагменту
             return NoteDetailsFragment().apply {
                 arguments = args
             }
@@ -229,3 +372,5 @@ class NoteDetailsFragment: Fragment() {
 
     }
 }
+
+     */

@@ -7,7 +7,7 @@ import com.borlanddev.notes.model.Note
 
 // Указываем какие сущности использовать Базе и начальную версию
 @Database (entities = [ Note::class], version = 1 )
-@TypeConverters(NoteTypeConverter::class)
+@TypeConverters(NoteTypeConverters::class)
 
 abstract class NoteDatabase: RoomDatabase() {
 
