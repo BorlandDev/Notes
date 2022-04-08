@@ -8,19 +8,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.NoteListViewModel
 import com.borlanddev.notes.model.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
 
 private const val TAG = "NoteListFragment"
 private const val ARG_NOTE_ID = "noteId"
 
-class NoteListFragment: Fragment() {
+class NoteListFragment: Fragment(R.layout.fragment_list_note) {
+
+
+    private lateinit var args : Bundle
 
 
     private lateinit var note: Note
@@ -35,19 +41,23 @@ class NoteListFragment: Fragment() {
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
 
-        val view = inflater.inflate(R.layout.fragment_list_note, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        findNavController().navigate(
+            R.id.action_noteDetailsFragment3_to_noteListFragment3,
+            bundleOf(NoteDetailsFragment.ARG_NOTE_ID to args)
+        )
+
 
 
 
         /*Определяем как отображать элементы в ресайклере и как работает прокрутка,
-         с помощью специальных менеджеров */
-        noteRecyclerView = view.findViewById(R.id.note_recycler_view) as RecyclerView
+        с помощью специальных менеджеров */
+
+        view.findViewById(R.id.note_recycler_view) as RecyclerView
 
 
         noteRecyclerView.layoutManager = LinearLayoutManager(context).apply {
@@ -57,15 +67,11 @@ class NoteListFragment: Fragment() {
 
         noteRecyclerView.adapter = adapter
 
-
-        fab = view.findViewById(R.id.new_note_FAB)
-
-        return view
-    }
+        fab.findViewById(R.id.new_note_FAB) as FloatingActionButton
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    //**********************************************************************************************
+
 
 
         /* Функция регестрирует наблюдателя за экземпляром LiveData и связи наблюдателя с
@@ -149,6 +155,9 @@ class NoteListFragment: Fragment() {
             /* Уведомляем нашу хост-актиити через интерфейс обратного вызова,
           о том какая заметка была выбрана в списке */
 
+            args = Bundle().apply {
+                putSerializable(ARG_NOTE_ID, note.id)
+            }
 
             Toast.makeText(context, "Заметка ${ (note.title) } ", Toast.LENGTH_SHORT ).show()
             }

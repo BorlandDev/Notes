@@ -11,14 +11,16 @@ import androidx.lifecycle.ViewModelProviders
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.Note
 import com.borlanddev.notes.model.NoteDetailsViewModel
+import java.util.*
 
-private const val ARG_NOTE_ID = "noteId"
 
-class NoteDetailsFragment: Fragment() {
+
+class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
     private lateinit var note: Note
     private lateinit var noteTitle: EditText
     private lateinit var noteText: EditText
+
 
 
     private val noteDetailsViewModel by lazy {
@@ -27,30 +29,26 @@ class NoteDetailsFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         note = Note()
 
         // Явно указываем фрагмент менеджеру вызвывать функию обртаного вызова
         setHasOptionsMenu(true)
 
+
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById(R.id.note_title) as EditText
+        view.findViewById(R.id.note_text) as EditText
+
+        // Загружаем заметку по переданному noteID
+        noteDetailsViewModel.loadNote(arguments?.getSerializable(ARG_NOTE_ID) as UUID)
     }
 
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        val view = inflater.inflate(R.layout.fragment_details_note, container, false)
-
-        noteTitle = view.findViewById(R.id.note_title) as EditText
-        noteText = view.findViewById(R.id.note_text) as EditText
-
-        return view
-
-    }
 
 
 
@@ -147,9 +145,9 @@ class NoteDetailsFragment: Fragment() {
 
         companion object {
 
-            fun newInstance() = NoteDetailsFragment()
+           const val ARG_NOTE_ID = "noteId"
 
-
+            //fun newInstance() = NoteDetailsFragment()
         }
     }
 
@@ -168,14 +166,9 @@ class NoteDetailsFragment: Fragment() {
     private lateinit var noteTitle: EditText
     private lateinit var noteText: EditText
 
-
     private val noteDetailsViewModel by lazy {
         ViewModelProviders.of(this).get(NoteDetailsViewModel::class.java)
     }
-
-
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -190,10 +183,7 @@ class NoteDetailsFragment: Fragment() {
 
         // Загружаем выбранную заметку
         noteDetailsViewModel.loadNote(noteId)
-
     }
-
-
 
     // аналог setContentView, настраивает и возвращает готовую верстку экрана
     override fun onCreateView(
@@ -208,7 +198,6 @@ class NoteDetailsFragment: Fragment() {
 
         return view
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -230,15 +219,10 @@ class NoteDetailsFragment: Fragment() {
                 updateUI()
             }
         }
-
     }
-
-
-
 
     override fun onStart() {
         super.onStart()
-
 
         // создаем анонимный класс реализующий интерфейс TextWatcher (Слушатель/наблюдатель)
         val titleWatcher = object : TextWatcher {
@@ -268,7 +252,6 @@ class NoteDetailsFragment: Fragment() {
             override fun beforeTextChanged(
                 s: CharSequence?, start: Int, count: Int, after: Int
             ) {}
-
             override fun onTextChanged(
                 sequence: CharSequence?,
                 start: Int,
@@ -282,15 +265,8 @@ class NoteDetailsFragment: Fragment() {
 
             override fun afterTextChanged(sequence: Editable?) {}
         }
-
-
-
         noteText.addTextChangedListener(textWatcher)
-
-
-
     }
-
 
 
     // Вызывается когда возникает необходимость в меню
@@ -299,9 +275,7 @@ class NoteDetailsFragment: Fragment() {
 
         // запонялем меню
         inflater.inflate(R.menu.fragment_details_action, menu)
-
     }
-
 
     // Когда пользователь выбирает команду в меню фрагмент получает обратный вызов этой функции
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -312,9 +286,7 @@ class NoteDetailsFragment: Fragment() {
             R.id.save_note_button -> {
 
                 noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
-
                 Toast.makeText(context, "Saved note", Toast.LENGTH_SHORT).show()
-
 
                 true } // флаг - дальнейшая обработка менюшки не требуется
 
@@ -322,19 +294,12 @@ class NoteDetailsFragment: Fragment() {
         }
     }
 
-
-
     private fun updateUI() {
 
         noteTitle.setText(note.title)
         noteText.setText(note.description)
-
         // !!! Добавить реализацию Даты
-
     }
-
-
-
 
     override fun onStop() {
         super.onStop()
@@ -343,12 +308,7 @@ class NoteDetailsFragment: Fragment() {
         noteDetailsViewModel.saveNote(note)
     }
 
-
-
-
     companion object { // Инкапуслируем получение нашего фрагмента , для активити и пр.
-
-
 
         // ВРЕМЕННАЯ РЕАЛИЗАЦИЯ НАВИГАЦИИ
         fun newInstance(noteId: UUID): NoteDetailsFragment {
@@ -362,9 +322,6 @@ class NoteDetailsFragment: Fragment() {
                 arguments = args
             }
         }
-
-
-
     }
 }
 

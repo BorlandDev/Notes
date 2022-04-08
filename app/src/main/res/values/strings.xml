@@ -9,4 +9,5 @@
 
     <string name="save_note_button">Save note</string>
     <string name="new_note_FAB">New note</string>
+    <string name="splash_fragment">Добро пожаловать в Заметки !</string>
 </resources>
