@@ -1,30 +1,27 @@
 package com.borlanddev.notes.controller
 
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.borlanddev.notes.R
-import com.borlanddev.notes.helpers.SwipeToDeleteCallback
 import com.borlanddev.notes.model.NoteListViewModel
 import com.borlanddev.notes.model.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 
 private const val TAG = "NoteListFragment"
+private const val ARG_NOTE_ID = "noteId"
 
 class NoteListFragment: Fragment() {
+
 
     private lateinit var note: Note
     private lateinit var fab: FloatingActionButton
@@ -46,17 +43,22 @@ class NoteListFragment: Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_list_note, container, false)
 
+
+
         /*Определяем как отображать элементы в ресайклере и как работает прокрутка,
          с помощью специальных менеджеров */
         noteRecyclerView = view.findViewById(R.id.note_recycler_view) as RecyclerView
-        noteRecyclerView.layoutManager = LinearLayoutManager(context)
+
+
+        noteRecyclerView.layoutManager = LinearLayoutManager(context).apply {
+            stackFromEnd = true   // Новый элемент списка добавляется вверху
+            reverseLayout = true
+        }
 
         noteRecyclerView.adapter = adapter
 
 
         fab = view.findViewById(R.id.new_note_FAB)
-
-
 
         return view
     }
@@ -147,6 +149,7 @@ class NoteListFragment: Fragment() {
             /* Уведомляем нашу хост-актиити через интерфейс обратного вызова,
           о том какая заметка была выбрана в списке */
 
+
             Toast.makeText(context, "Заметка ${ (note.title) } ", Toast.LENGTH_SHORT ).show()
             }
 
@@ -184,7 +187,6 @@ class NoteListFragment: Fragment() {
         // утилизатор узнает заранее сколько элементов ему нужно будет отобразить
         override fun getItemCount() = notes.size
     }
-
 
 
 
@@ -361,10 +363,6 @@ class NoteListFragment: Fragment() {
         // ВРЕМЕННАЯ РЕАЛИЗАЦИЯ НАВИГАЦИИ
         callbacks = null
     }
-
-
-
-
 
 
     // Холдер - ячейка (визуальный элемент списка, контейнер для наших данных)

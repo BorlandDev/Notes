@@ -1,23 +1,16 @@
 package com.borlanddev.notes.controller
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
-import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.Note
 import com.borlanddev.notes.model.NoteDetailsViewModel
-import com.borlanddev.notes.model.NoteListViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
-import kotlin.concurrent.timerTask
 
 private const val ARG_NOTE_ID = "noteId"
 
@@ -41,6 +34,7 @@ class NoteDetailsFragment: Fragment() {
         setHasOptionsMenu(true)
 
     }
+
 
 
     override fun onCreateView(
@@ -154,6 +148,7 @@ class NoteDetailsFragment: Fragment() {
         companion object {
 
             fun newInstance() = NoteDetailsFragment()
+
 
         }
     }
