@@ -27,11 +27,9 @@ private const val ARG_NOTE_ID = "noteId"
 
 class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
-
     private lateinit var note: Note
 
     private var adapter: NoteAdapter? = NoteAdapter(emptyList())
-
     // Получаем ссылку на вью модель
     private val noteListViewModel: NoteListViewModel by lazy {
         ViewModelProviders.of(this).get(NoteListViewModel::class.java)
@@ -41,9 +39,11 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        val fab = view.findViewById(R.id.new_note_FAB) as FloatingActionButton
+
         /*Определяем как отображать элементы в ресайклере и как работает прокрутка,
         с помощью специальных менеджеров */
-
         val noteRecyclerView = view.findViewById(R.id.note_recycler_view) as RecyclerView
 
         noteRecyclerView.layoutManager = LinearLayoutManager(context).apply {
@@ -53,10 +53,12 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
         noteRecyclerView.adapter = adapter
 
-        val fab = view.findViewById(R.id.new_note_FAB) as FloatingActionButton
 
 
-    //**********************************************************************************************
+      //val action = NoteListFragmentDirections.actionNoteListFragmentToNoteDetailsFragment2(noteId)
+
+
+        //**********************************************************************************************
 
         /* Функция регестрирует наблюдателя за экземпляром LiveData и связи наблюдателя с
            жизненным циклом другого компонента */
@@ -130,13 +132,15 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
         override fun onClick(v: View?) {
 
-            // Передаем айдишник выбранной заметки
-            val bundle = bundleOf(NoteDetailsFragment.ARG_NOTE_ID to note.id)
-            view?.findNavController()?.navigate(R.id.action_noteListFragment_to_noteDetailsFragment2, bundle)
+            val bundle = Bundle()
+            val noteId = note.id
 
+            // Передаем айдишник выбранной заметки
+            bundle.putSerializable("noteId", noteId)
+            findNavController().navigate(R.id.action_noteListFragment_to_noteDetailsFragment2, bundle)
 
             // Временное уведомление
-            Toast.makeText(context, "Заметка ${ (note.title) } ", Toast.LENGTH_SHORT ).show()
+            Toast.makeText(context, "Заметка: ${ (note.title) } ", Toast.LENGTH_SHORT ).show()
             }
 
 

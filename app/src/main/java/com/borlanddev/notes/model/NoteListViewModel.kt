@@ -11,7 +11,6 @@ class NoteListViewModel: ViewModel() {
     val noteListLiveData = noteRepository.getNotes()
 
 
-    fun saveNote (note: Note) { noteRepository.updateNote(note) }
 
     // Создание новой пустой заметки
     fun newNote(note: Note) {

@@ -24,52 +24,50 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        note = Note()
-
-        noteTitle = view.findViewById(R.id.note_title) as EditText
-        noteText = view.findViewById(R.id.note_text) as EditText
 
         // Явно указываем фрагмент менеджеру вызвывать функию обртаного вызова
         setHasOptionsMenu(true)
+        noteTitle = view.findViewById(R.id.note_title) as EditText
+        noteText = view.findViewById(R.id.note_text) as EditText
 
-        val args = arguments?.getSerializable(ARG_NOTE_ID) as UUID
+        note = Note()
+        note.id = arguments?.getSerializable("noteId") as UUID
 
         // Загружаем заметку по переданному noteID
-        noteDetailsViewModel.loadNote(args)
+        noteDetailsViewModel.loadNote(note.id)
 
-        updateUI()
+
+
 
         //******************************************************************************************
 
-            /* Функция регестрирует наблюдателя за экземпляром LiveData и связи наблюдателя с
+        /* Функция регестрирует наблюдателя за экземпляром LiveData и связи наблюдателя с
           жизненным циклом другого компонента */
 
-            noteDetailsViewModel.noteLiveData.observe (
+        noteDetailsViewModel.noteLiveData.observe(
 
-                viewLifecycleOwner)   /* Первый параметр функции observe - Владелец ЖЦ.
+            viewLifecycleOwner
+        )   /* Первый параметр функции observe - Владелец ЖЦ.
             (наблюдатель будет (жить) получать обновления данных столько,сколько живет Fragment) */
 
-            /* Второй параметр, реализация Observer - наблюдатель (преобразовали SAM в лямбду).
+        /* Второй параметр, реализация Observer - наблюдатель (преобразовали SAM в лямбду).
                     Он отвечает за реакцию на новые данные из LiveData. Блок кода выполняется всякий раз
                         когда обновляется список в LiveData */
-            { notes ->
-                notes?.let {
+        { notes ->
+            notes?.let {
 
-                    updateUI()
+                updateUI()
 
-                }
             }
         }
+    }
 
 
     override fun onStart() {
         super.onStart()
-
-
 
 
         // создаем анонимный класс реализующий интерфейс TextWatcher (Слушатель/наблюдатель)
@@ -86,13 +84,12 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
                 // преобразует ввод пользователя из CharSequence в String
                 note.title = sequence.toString()
             }
-            override fun afterTextChanged(sequence: Editable?) {} }
+
+            override fun afterTextChanged(sequence: Editable?) {}
+        }
 
         // Добавление слушателя на Заголовок
         noteTitle.addTextChangedListener(titleWatcher)
-
-
-
 
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -101,7 +98,8 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
                 sequence: CharSequence?,
                 start: Int,
                 before: Int,
-                count: Int) {
+                count: Int
+            ) {
 
                 // преобразует ввод пользователя из CharSequence в String
                 note.description = sequence.toString()
@@ -112,49 +110,47 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
         // Добавление слушателя на Текст заметки
         noteText.addTextChangedListener(textWatcher)
-
-
     }
 
 
+    // Вызывается когда возникает необходимость в меню
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
 
-        // Вызывается когда возникает необходимость в меню
-        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-            super.onCreateOptionsMenu(menu, inflater)
+        // запонялем меню
+        inflater.inflate(R.menu.fragment_details_action, menu)
+    }
 
-            // запонялем меню
-            inflater.inflate(R.menu.fragment_details_action, menu)
+    // Когда пользователь выбирает команду в меню фрагмент получает обратный вызов этой функции
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        // реагируем в зависимости от выбора команды в меню
+        return when (item.itemId) {
+
+            R.id.save_note_button -> {
+
+                noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
+
+                updateUI()
+
+                Toast.makeText(
+                    context, "Saved note with title: ${note.title}",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                true
+            } // флаг - дальнейшая обработка менюшки не требуется
+
+            else -> return super.onOptionsItemSelected(item)
         }
+    }
 
-        // Когда пользователь выбирает команду в меню фрагмент получает обратный вызов этой функции
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onStop() {
+        super.onStop()
 
-            // реагируем в зависимости от выбора команды в меню
-            return when (item.itemId) {
-
-                R.id.save_note_button -> {
-
-                    noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
-
-                    updateUI()
-
-                    Toast.makeText(context, "Saved note with title: ${note.title}",
-                            Toast.LENGTH_SHORT).show()
-
-                    true
-                } // флаг - дальнейшая обработка менюшки не требуется
-
-                else -> return super.onOptionsItemSelected(item)
-            }
-        }
-
-        override fun onStop() {
-            super.onStop()
-
-            // При закрытии фрагмента сохраняем введенный текст
-            noteDetailsViewModel.saveNote(note)
-        }
-
+        // При закрытии фрагмента сохраняем введенный текст
+        noteDetailsViewModel.saveNote(note)
+    }
 
 
     private fun updateUI() {
@@ -165,12 +161,7 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
     }
 
 
-
-    companion object {
-           const val ARG_NOTE_ID = "noteId"
-
-        }
-    }
+}
 
 
 
