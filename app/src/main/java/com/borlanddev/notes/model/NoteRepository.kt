@@ -6,7 +6,6 @@ import androidx.room.Room
 import com.borlanddev.notes.database.NoteDatabase
 import java.lang.IllegalStateException
 import java.util.*
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 private const val DATABASE_NAME = "note_database"
@@ -31,31 +30,35 @@ class NoteRepository private constructor (context: Context) {
 
 
 
-
-
-
     /* Как updateNote так и addNote оборачивают вызовы в Dao внутри блока execute { }.
                Он выталкиват эти операции из основного потока чобы не блокировать работу UI  */
 
 
-    fun getNotes(): LiveData <List <Note> > = noteDao.getNotes() // Вернет список всех заметок
+    fun getNotes(): LiveData<MutableList<Note>> = noteDao.getNotes() // Вернет список всех заметок
 
-    fun getNote(id: UUID): LiveData <Note?> = noteDao.getNote(id) // Вернет заметку по конкретному UUID
+    fun getNote(id: UUID): LiveData<Note?> = noteDao.getNote(id) // Вернет заметку по конкретному UUID
 
-    // Обновит переданную заметку
-    fun updateNote(note: Note) {
-        executor.execute { noteDao.updateNote(note) }
-    }
-
-    // Создаст новую пустую заметку
-    fun newNote(note: Note) {
-        executor.execute { noteDao.newNote(note) }
+    fun deleteNote(note: Note) {
+        executor.execute {
+            noteDao.deleteNote(note)
+        }
     }
 
 
+        // Обновит переданную заметку
+        fun updateNote(note: Note) {
+            executor.execute { noteDao.updateNote(note) }
+        }
+
+        // Создаст новую пустую заметку
+        fun newNote(note: Note) {
+            executor.execute { noteDao.newNote(note) }
+        }
 
 
-    companion object {
+
+
+        companion object {
 
         private var INSTANCE: NoteRepository? = null
 
@@ -70,6 +73,7 @@ class NoteRepository private constructor (context: Context) {
             throw IllegalStateException("NoteRepository must be initialized")
         }
     }
+
 
 
 }

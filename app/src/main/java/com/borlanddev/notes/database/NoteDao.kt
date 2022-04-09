@@ -11,7 +11,7 @@ import java.util.*
 interface NoteDao {
 
     @Query("SELECT * FROM note") // Вернет список всех заметок
-    fun getNotes (): LiveData<List<Note>>
+    fun getNotes (): LiveData<MutableList<Note>>
 
     @Query("SELECT * FROM note WHERE id=(:id)")  // Вернет заметку по конкретному UUID
     fun getNote (id: UUID): LiveData<Note?>
@@ -21,6 +21,9 @@ interface NoteDao {
 
     @Insert
     fun newNote (note: Note)
+
+    @Delete
+    fun deleteNote (vararg note: Note)
 
 
 }

@@ -1,29 +1,24 @@
 package com.borlanddev.notes.controller
 
-
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.borlanddev.notes.R
+import com.borlanddev.notes.helpers.SwipeToDeleteCallback
 import com.borlanddev.notes.model.NoteListViewModel
 import com.borlanddev.notes.model.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
-private const val TAG = "NoteListFragment"
-private const val ARG_NOTE_ID = "noteId"
 
 class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
@@ -38,7 +33,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val fab = view.findViewById(R.id.new_note_FAB) as FloatingActionButton
 
@@ -88,6 +82,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         fab.setOnClickListener {
 
             note = Note().apply {
+                id = UUID.randomUUID()
                 title = "Новая заметка"
                 description = ""
             //  date = "Текущая дата"
@@ -96,7 +91,37 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
             noteListViewModel.newNote(note)
         }
+
+
+
+        // Удаление элементов списка смахиванием
+        val swipeToDeleteCallBack = object : SwipeToDeleteCallback() {
+            val listNotes = noteListViewModel.noteListLiveData
+
+            // Функция обнаруживает свайпы
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                // Определяем индекс элемента по которому был свайп
+                val position = viewHolder.adapterPosition
+
+
+                listNotes.value?.removeAt(position)
+
+                noteListViewModel.deleteNote(note)
+
+                /* Нужно убедиться, что элемент больше не отображается.
+                 При этом также запускается анимация удаления элемента по умолчанию */
+                noteRecyclerView.adapter?.notifyItemRemoved(position)
+            }
+        }
+        // Прикрепляем к ItemTouchHelper наш Recycler
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
+        itemTouchHelper.attachToRecyclerView(noteRecyclerView)
+
+
     }
+
+
 
 
 
@@ -130,10 +155,11 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
         }
 
-        override fun onClick(v: View?) {
+        override fun onClick(v: View) {
 
             val bundle = Bundle()
             val noteId = note.id
+
 
             // Передаем айдишник выбранной заметки
             bundle.putSerializable("noteId", noteId)
@@ -189,27 +215,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
 
     /*
-        // Удаление элементов списка смахиванием
-        val swipeToDeleteCallBack = object : SwipeToDeleteCallback() {
-            val listNotes = noteListViewModel.notes     //noteListLiveData
 
-            // Функция обнаруживает свайпы
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
-                // Определяем индекс элемента по которому был свайп
-                val position = viewHolder.adapterPosition
-
-                // !!!!!!!!!!!!!!!!! поведение удаления элемента !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                // listNotes.removeAt(position)
-
-                /* Нужно убедиться, что элемент больше не отображается.
-                 При этом также запускается анимация удаления элемента по умолчанию */
-                noteRecyclerView.adapter?.notifyItemRemoved(position)
-            }
-        }
-            // Прикрепляем к ItemTouchHelper наш Recycler
-            val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
-            itemTouchHelper.attachToRecyclerView(noteRecyclerView)
 
      */
 

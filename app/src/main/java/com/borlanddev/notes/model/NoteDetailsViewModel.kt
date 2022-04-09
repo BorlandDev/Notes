@@ -22,9 +22,7 @@ class NoteDetailsViewModel: ViewModel() {
 
 
     // Определяет какую заметку нужно вывести на экран
-    fun loadNote (noteId: UUID) {
-        noteIdLiveData.value = noteId
-    }
+    fun loadNote (noteId: UUID) { noteIdLiveData.value = noteId }
 
     // Сохраняем текст введенный в EditText, в базу данных
     fun saveNote (note: Note) { noteRepository.updateNote(note) }
