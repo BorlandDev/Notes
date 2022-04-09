@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:id="@+id/nav_graph_application"
     app:startDestination="@id/splashFragment">
     <fragment
@@ -8,26 +10,30 @@
         android:name="screens.SplashFragment"
         android:label="SplashFragment" >
         <action
-            android:id="@+id/action_splashFragment_to_noteListFragment3"
-            app:destination="@id/noteListFragment3"
-            app:popUpTo="+id/nav_graph_application"
+            android:id="@+id/action_splashFragment_to_noteListFragment"
+            app:destination="@id/noteListFragment"
+
+            app:popUpTo="@navigation/nav_graph_application"
             app:popUpToInclusive="true"
             />
     </fragment>
+
     <fragment
-        android:id="@+id/noteListFragment3"
+        android:id="@+id/noteListFragment"
         android:name="com.borlanddev.notes.controller.NoteListFragment"
         android:label="NoteListFragment" >
         <action
-            android:id="@+id/action_noteListFragment3_to_noteDetailsFragment3"
-            app:destination="@id/noteDetailsFragment3" />
+            android:id="@+id/action_noteListFragment_to_noteDetailsFragment2"
+            app:destination="@id/noteDetailsFragment2" />
+
     </fragment>
+
     <fragment
-        android:id="@+id/noteDetailsFragment3"
+        android:id="@+id/noteDetailsFragment2"
         android:name="com.borlanddev.notes.controller.NoteDetailsFragment"
         android:label="NoteDetailsFragment" >
         <action
-            android:id="@+id/action_noteDetailsFragment3_to_noteListFragment3"
-            app:destination="@id/noteListFragment3" />
+            android:id="@+id/action_noteDetailsFragment2_to_noteListFragment"
+            app:destination="@id/noteListFragment" />
     </fragment>
 </navigation>

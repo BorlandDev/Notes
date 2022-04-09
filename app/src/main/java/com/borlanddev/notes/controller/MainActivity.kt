@@ -7,10 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.borlanddev.notes.R
 import java.util.*
 
-class MainActivity : AppCompatActivity()
+class MainActivity : AppCompatActivity() {
+
+       override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
+
+    }
 
 
-
+}
 
 
 /*
