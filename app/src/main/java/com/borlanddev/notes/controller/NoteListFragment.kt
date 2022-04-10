@@ -105,9 +105,10 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                 // Определяем индекс элемента по которому был свайп
                 val position = viewHolder.adapterPosition
 
-
+                // Определяем заметку по которой выполнен свайп
                 val noteID = listNotes.value?.get(position)
 
+                // Удаляем заметку из базы
                 noteListViewModel.deleteNote(noteID!!.id)
 
 
