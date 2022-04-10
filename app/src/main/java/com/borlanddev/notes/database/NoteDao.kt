@@ -22,8 +22,8 @@ interface NoteDao {
     @Insert
     fun newNote (note: Note)
 
-    @Delete
-    fun deleteNote (vararg note: Note)
+    @Query ("DELETE FROM note WHERE id= (:id)")
+    fun deleteNote (id: UUID)
 
 
 }

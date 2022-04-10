@@ -38,9 +38,9 @@ class NoteRepository private constructor (context: Context) {
 
     fun getNote(id: UUID): LiveData<Note?> = noteDao.getNote(id) // Вернет заметку по конкретному UUID
 
-    fun deleteNote(note: Note) {
+    fun deleteNote(id: UUID) {
         executor.execute {
-            noteDao.deleteNote(note)
+            noteDao.deleteNote(id)
         }
     }
 

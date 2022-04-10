@@ -87,6 +87,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                 description = ""
             //  date = "Текущая дата"
 
+
             }
 
             noteListViewModel.newNote(note)
@@ -105,9 +106,13 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                 val position = viewHolder.adapterPosition
 
 
-                listNotes.value?.removeAt(position)
+                val noteID = listNotes.value?.get(position)
 
-                noteListViewModel.deleteNote(note)
+                noteListViewModel.deleteNote(noteID!!.id)
+
+
+
+
 
                 /* Нужно убедиться, что элемент больше не отображается.
                  При этом также запускается анимация удаления элемента по умолчанию */

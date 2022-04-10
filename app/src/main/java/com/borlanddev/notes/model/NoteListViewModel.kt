@@ -20,8 +20,10 @@ class NoteListViewModel: ViewModel() {
 
 
 
-    fun deleteNote(note: Note) {
-        noteRepository.deleteNote(note)
+    fun deleteNote(id: UUID) {
+
+
+        noteRepository.deleteNote(id)
     }
 
 
