@@ -8,7 +8,6 @@ import java.util.*
 data class Note (@PrimaryKey var id: UUID = UUID.randomUUID(),
                  var title: String = "",
                  var description: String = "",
-                 var date: String = "09.07.21" ) // ВРЕМЕННЫЙ ФОРМАТ ДАТЫ
+                 var date: String = "") // ВРЕМЕННЫЙ ФОРМАТ ДАТЫ
 
-// Date = Date()
-// DateFormat()
+

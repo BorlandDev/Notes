@@ -9,6 +9,19 @@ class NoteTypeConverters {
 с примитивами. */
 
 
+    @TypeConverter
+    fun fromDate (date: Date?): Long? {
+        return date?.time
+    }
+
+    @TypeConverter
+    fun toDate (millisSinceEpoch: Long?): Date? {
+
+        return millisSinceEpoch?.let {
+            Date(it)
+        }
+    }
+
     @TypeConverter // конвертируем данные для сохранения в базе
     fun fromUUID(uuid: UUID?): String? = uuid?.toString()
 

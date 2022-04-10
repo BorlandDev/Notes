@@ -41,6 +41,7 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
 
 
+
         //******************************************************************************************
 
         /* Функция регестрирует наблюдателя за экземпляром LiveData и связи наблюдателя с
@@ -66,7 +67,6 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
     override fun onStart() {
         super.onStart()
-
 
         // создаем анонимный класс реализующий интерфейс TextWatcher (Слушатель/наблюдатель)
         val titleWatcher = object : TextWatcher {
@@ -127,9 +127,12 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
             R.id.save_note_button -> {
 
-                noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
+                if (note.description) note.date = formatDateCreate()
 
-                updateUI()
+                    noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
+
+                    updateUI()
+
 
                 Toast.makeText(
                     context, "Saved note with title: ${note.title}",
@@ -143,19 +146,22 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
         }
     }
 
+    /*
     override fun onStop() {
         super.onStop()
 
         // При закрытии фрагмента сохраняем введенный текст
         noteDetailsViewModel.saveNote(note)
     }
+     */
 
 
     private fun updateUI() {
 
         noteTitle.setText(note.title)
         noteText.setText(note.description)
-        // !!! Добавить реализацию Даты
+        //note.date = formatDateCreate()
+
     }
 
 

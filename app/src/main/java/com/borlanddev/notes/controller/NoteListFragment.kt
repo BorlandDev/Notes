@@ -1,5 +1,6 @@
 package com.borlanddev.notes.controller
 
+import android.icu.text.MessageFormat.format
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,8 @@ import com.borlanddev.notes.helpers.SwipeToDeleteCallback
 import com.borlanddev.notes.model.NoteListViewModel
 import com.borlanddev.notes.model.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -48,8 +51,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         noteRecyclerView.adapter = adapter
 
 
-
-      //val action = NoteListFragmentDirections.actionNoteListFragmentToNoteDetailsFragment2(noteId)
 
 
         //**********************************************************************************************
@@ -85,12 +86,13 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                 id = UUID.randomUUID()
                 title = "Новая заметка"
                 description = ""
-            //  date = "Текущая дата"
-
+                date = formatDateCreate()
 
             }
 
-            noteListViewModel.newNote(note)
+
+
+            noteListViewModel.newNote(note!!)
         }
 
 
@@ -136,6 +138,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
 
 
+
     // Холдер - ячейка (визуальный элемент списка, контейнер для наших данных)
     private inner class NoteHolder(view: View) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -157,7 +160,10 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
             titleNote.text = this.note.title
             descriptionNote.text = this.note.description
-            dateNote.text = this.note.date         // ВРЕМЕННАЯ РЕАЛИЗАЦИЯ ДАТЫ !!!!!!!!!!!!!!!!!!!
+
+            //formatDateCheck(note.date)
+
+            dateNote.text = this.note.date
 
         }
 
@@ -208,8 +214,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
 
 
-    companion object { // Инкапуслируем получение нашего фрагмента , для активити и пр.
-
+    companion object {
         const val splashCreate = "Created splash screen"
 
     }
@@ -218,23 +223,24 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
 
 
+    fun formatDateCreate (): String = SimpleDateFormat("HH:mm").format(Date())
+
+    fun formatDateCheck (noteDate: String): String  {
+
+        val currentDate = Calendar.getInstance()
+
+        val currentTemp =  SimpleDateFormat("dd-MM-yyyy").format(currentDate)
+
+        val checkDate = SimpleDateFormat("dd-MM-yyyy").format(noteDate)
+
+        return if (currentTemp != checkDate) SimpleDateFormat("dd-MM-yyyy").format(Date())
+        else noteDate
 
 
-    /*
 
-
-     */
-
-
-    /*
-
-    private fun updateUIList(notes: List<Note>) {
-
-        adapter = NoteAdapter(notes)
-        noteRecyclerView.adapter = adapter
     }
 
-    */
 
 
-
+// Есть DateFormat и просто проверять при получении данных, если дата создания не сходится
+// с сегодняшней датой, то брать увеличенный формат даты
