@@ -6,8 +6,10 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.Note
 import com.borlanddev.notes.model.NoteDetailsViewModel
@@ -28,12 +30,14 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
     }
 
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        // Явно указываем фрагмент менеджеру вызвывать функию обртаного вызова
         setHasOptionsMenu(true)
+
         noteTitle = view.findViewById(R.id.note_title) as EditText
         noteText = view.findViewById(R.id.note_text) as EditText
 
@@ -136,8 +140,9 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
             R.id.save_note_button -> {
 
                 // Дата заметки изменятся только если изменяли ее текст
-                if (currentTitle != note.title || currentText != note.description)
+                if (currentTitle != note.title || currentText != note.description) {
                     note.date = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
+                }
 
 
                     noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных

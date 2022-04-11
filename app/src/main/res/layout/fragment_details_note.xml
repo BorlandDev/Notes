@@ -8,6 +8,8 @@
     android:layout_margin="16dp"
     >
 
+
+
     <EditText
         android:id="@+id/note_title"
 
@@ -33,7 +35,6 @@
         android:paddingTop="10dp"
         android:textColor="@color/black"
         android:textSize="20sp" />
-
 
 
 </LinearLayout>

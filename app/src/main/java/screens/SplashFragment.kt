@@ -16,6 +16,7 @@ class SplashFragment: Fragment(R.layout.fragment_splash) {
 
         view.postDelayed( {
 
+            // возвращает хост 
             findNavController().navigate(
 
                 R.id.action_splashFragment_to_noteListFragment,
