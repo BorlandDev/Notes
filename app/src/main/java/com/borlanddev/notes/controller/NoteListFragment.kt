@@ -48,6 +48,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
             reverseLayout = true
         }
 
+
         noteRecyclerView.adapter = adapter
 
 
@@ -86,13 +87,11 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                 id = UUID.randomUUID()
                 title = "Новая заметка"
                 description = ""
-                date = formatDateCreate()
+                date = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
 
             }
 
-
-
-            noteListViewModel.newNote(note!!)
+            noteListViewModel.newNote(note)
         }
 
 
@@ -147,9 +146,8 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
         private val titleNote: TextView = itemView.findViewById(R.id.item_title_note)
         private val descriptionNote: TextView = itemView.findViewById(R.id.item_description_note)
-
         private val dateNote: TextView = itemView.findViewById(R.id.item_date_note)
-        // ВРЕМЕННАЯ РЕАЛИЗАЦИЯ ДАТЫ !!!!!!!!!!!!!!!!!!!
+
 
         init { // ставим слушателя на каждую вьюшку вьюХолдера
             itemView.setOnClickListener (this)
@@ -161,10 +159,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
             titleNote.text = this.note.title
             descriptionNote.text = this.note.description
 
-            //formatDateCheck(note.date)
-
-            dateNote.text = this.note.date
-
+            dateNote.text = formatDateCreate(this.note.date)
         }
 
         override fun onClick(v: View) {
@@ -180,8 +175,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
             // Временное уведомление
             Toast.makeText(context, "Заметка: ${ (note.title) } ", Toast.LENGTH_SHORT ).show()
             }
-
-
         }
 
 
@@ -213,34 +206,17 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
     }
 
 
-
     companion object {
         const val splashCreate = "Created splash screen"
-
     }
 }
 
 
+    fun formatDateCreate (noteDate: String): String {
 
-
-    fun formatDateCreate (): String = SimpleDateFormat("HH:mm").format(Date())
-
-    fun formatDateCheck (noteDate: String): String  {
-
-        val currentDate = Calendar.getInstance()
-
-        val currentTemp =  SimpleDateFormat("dd-MM-yyyy").format(currentDate)
-
-        val checkDate = SimpleDateFormat("dd-MM-yyyy").format(noteDate)
-
-        return if (currentTemp != checkDate) SimpleDateFormat("dd-MM-yyyy").format(Date())
-        else noteDate
-
-
-
+        val todayDate = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
+                        // Если заметка сделана сегодня то выводим HH:mm иначе dd-MM-yyyy
+        return if (noteDate == todayDate) noteDate.split(" ")[1]
+        else noteDate.split(" ")[0]
     }
 
-
-
-// Есть DateFormat и просто проверять при получении данных, если дата создания не сходится
-// с сегодняшней датой, то брать увеличенный формат даты

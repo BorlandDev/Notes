@@ -19,6 +19,9 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
     private lateinit var noteTitle: EditText
     private lateinit var noteText: EditText
 
+    private var currentTitle = ""
+    private var currentText = ""
+
     private val noteDetailsViewModel by lazy {
         ViewModelProviders.of(this).get(NoteDetailsViewModel::class.java)
     }
@@ -40,8 +43,6 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
         noteDetailsViewModel.loadNote(note.id)
 
 
-
-
         //******************************************************************************************
 
         /* Функция регестрирует наблюдателя за экземпляром LiveData и связи наблюдателя с
@@ -60,6 +61,10 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
             note?.let {
              this.note = note
                      updateUI()
+
+                currentTitle = note.title
+                currentText = note.description
+
             }
         }
     }
@@ -67,6 +72,7 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
     override fun onStart() {
         super.onStart()
+
 
         // создаем анонимный класс реализующий интерфейс TextWatcher (Слушатель/наблюдатель)
         val titleWatcher = object : TextWatcher {
@@ -101,6 +107,7 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
                 // преобразует ввод пользователя из CharSequence в String
                 note.description = sequence.toString()
+
             }
 
             override fun afterTextChanged(sequence: Editable?) {}
@@ -127,10 +134,11 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
             R.id.save_note_button -> {
 
-                if (note.description) note.date = formatDateCreate()
+            // Дата заметки изменятся только если изменяли ее текст
+              //  if (currentTitle != note.title || currentText != note.description)
+                //    note.date = formatDateCreate(note.date)
 
                     noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
-
                     updateUI()
 
 
@@ -160,7 +168,6 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
         noteTitle.setText(note.title)
         noteText.setText(note.description)
-        //note.date = formatDateCreate()
 
     }
 
