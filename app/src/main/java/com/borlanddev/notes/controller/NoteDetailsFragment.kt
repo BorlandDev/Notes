@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.Note
 import com.borlanddev.notes.model.NoteDetailsViewModel
+import java.text.SimpleDateFormat
 import java.util.*
 
 class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
@@ -134,9 +135,10 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
             R.id.save_note_button -> {
 
-            // Дата заметки изменятся только если изменяли ее текст
-              //  if (currentTitle != note.title || currentText != note.description)
-                //    note.date = formatDateCreate(note.date)
+                // Дата заметки изменятся только если изменяли ее текст
+                if (currentTitle != note.title || currentText != note.description)
+                    note.date = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
+
 
                     noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
                     updateUI()

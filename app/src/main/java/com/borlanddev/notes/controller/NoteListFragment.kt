@@ -2,6 +2,7 @@ package com.borlanddev.notes.controller
 
 import android.icu.text.MessageFormat.format
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -214,9 +215,13 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
     fun formatDateCreate (noteDate: String): String {
 
-        val todayDate = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
-                        // Если заметка сделана сегодня то выводим HH:mm иначе dd-MM-yyyy
-        return if (noteDate == todayDate) noteDate.split(" ")[1]
-        else noteDate.split(" ")[0]
+        val noteDay = noteDate.split(" ")[0] // берем дату заметки
+        val noteHours = noteDate.split(" ")[1] // берем часы и минуты заметки
+
+        val todayDate = SimpleDateFormat("dd-MM-yyyy").format(Date()) // берем текущую дату
+
+        // Если заметка сделана сегодня то выводим HH:mm иначе dd-MM-yyyy
+        return if (noteDay == todayDate) noteHours else noteDay
+
     }
 
