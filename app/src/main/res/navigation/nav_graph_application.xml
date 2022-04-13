@@ -16,6 +16,7 @@
             app:popUpTo="@navigation/nav_graph_application"
             app:popUpToInclusive="true"
             />
+
     </fragment>
 
     <fragment
@@ -24,12 +25,12 @@
         android:label="NoteListFragment" >
         <action
             android:id="@+id/action_noteListFragment_to_noteDetailsFragment2"
-            app:destination="@id/noteDetailsFragment2" />
+            app:destination="@id/noteDetailsFragment" />
 
     </fragment>
 
     <fragment
-        android:id="@+id/noteDetailsFragment2"
+        android:id="@+id/noteDetailsFragment"
         android:name="com.borlanddev.notes.controller.NoteDetailsFragment"
         android:label="NoteDetailsFragment" >
         <action
