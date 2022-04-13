@@ -1,4 +1,4 @@
-package screens
+package com.borlanddev.notes.screens
 
 import android.os.Bundle
 import android.view.View

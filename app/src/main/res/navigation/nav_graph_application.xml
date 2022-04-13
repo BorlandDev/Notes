@@ -7,7 +7,7 @@
     app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/splashFragment"
-        android:name="screens.SplashFragment"
+        android:name="com.borlanddev.notes.screens.SplashFragment"
         android:label="SplashFragment" >
         <action
             android:id="@+id/action_splashFragment_to_noteListFragment"
