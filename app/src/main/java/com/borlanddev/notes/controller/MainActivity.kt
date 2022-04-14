@@ -31,19 +31,20 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
-            when (destination.id) {
+             if (destination.id == R.id.splashFragment) supportActionBar?.hide()
+             if (destination.id == R.id.noteListFragment) supportActionBar?.apply {
+                 show()
+                 setDisplayHomeAsUpEnabled(false)
+             }
 
-                R.id.splashFragment -> supportActionBar?.hide()
-              R.id.noteListFragment -> supportActionBar?.hide()
 
-                  /* Проверять первый ли это запуск приложения .
+             /* Проверять первый ли это запуск приложения .
               Показывать анимацию и вызвать функцию прослушки сети. Если запуск не первый, показывать
               анимацию под тулбаром и также слушать сеть.
               */
 
               //R.id.DetailsFragment ->  продолжать показывать анимацию
 
-                else -> supportActionBar?.show()
             }
         }
 
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    }
+
 
 
 

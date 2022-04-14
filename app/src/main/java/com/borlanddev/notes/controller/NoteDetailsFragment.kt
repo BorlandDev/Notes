@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -78,7 +77,6 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
     override fun onStart() {
         super.onStart()
 
-
         // создаем анонимный класс реализующий интерфейс TextWatcher (Слушатель/наблюдатель)
         val titleWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -112,9 +110,7 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
                 // преобразует ввод пользователя из CharSequence в String
                 note.description = sequence.toString()
-
             }
-
             override fun afterTextChanged(sequence: Editable?) {}
         }
 
@@ -144,16 +140,8 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
                     note.date = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
                 }
 
-
                     noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
                     updateUI()
-
-
-                Toast.makeText(
-                    context, "Saved note with title: ${note.title}",
-                    Toast.LENGTH_SHORT
-                ).show()
-
                 true
             } // флаг - дальнейшая обработка менюшки не требуется
 
@@ -166,14 +154,6 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
         }
     }
 
-    /*
-    override fun onStop() {
-        super.onStop()
-
-        // При закрытии фрагмента сохраняем введенный текст
-        noteDetailsViewModel.saveNote(note)
-    }
-     */
 
 
     private fun updateUI() {

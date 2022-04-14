@@ -41,6 +41,11 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
 
 
+
+
+
+
+
         val fab = view.findViewById(R.id.new_note_FAB) as FloatingActionButton
 
         /*Определяем как отображать элементы в ресайклере и как работает прокрутка,
@@ -52,17 +57,12 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
             reverseLayout = true
         }
 
-
         noteRecyclerView.adapter = adapter
 
-
-
-
-        //**********************************************************************************************
+        //******************************************************************************************
 
         /* Функция регестрирует наблюдателя за экземпляром LiveData и связи наблюдателя с
            жизненным циклом другого компонента */
-
         noteListViewModel.noteListLiveData.observe(
 
             viewLifecycleOwner
@@ -74,7 +74,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                     когда обновляется список в LiveData */
         { notes ->
             notes?.let {
-
                 /* Когда все виджеты будут готовы и отрисованы на экране и выполнятся запросы из БД,
                          можно обновлять интерфейс. */
 
@@ -116,10 +115,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                 // Удаляем заметку из базы
                 noteListViewModel.deleteNote(noteID!!.id)
 
-
-
-
-
                 /* Нужно убедиться, что элемент больше не отображается.
                  При этом также запускается анимация удаления элемента по умолчанию */
                 noteRecyclerView.adapter?.notifyItemRemoved(position)
@@ -128,8 +123,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         // Прикрепляем к ItemTouchHelper наш Recycler
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
         itemTouchHelper.attachToRecyclerView(noteRecyclerView)
-
-
     }
 
 
@@ -162,22 +155,16 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
             titleNote.text = this.note.title
             descriptionNote.text = this.note.description
-
             dateNote.text = formatDateCreate(this.note.date)
         }
 
         override fun onClick(v: View) {
-
             val bundle = Bundle()
             val noteId = note.id
-
 
             // Передаем айдишник выбранной заметки
             bundle.putSerializable("noteId", noteId)
             findNavController().navigate(R.id.action_noteListFragment_to_noteDetailsFragment2, bundle)
-
-            // Временное уведомление
-            Toast.makeText(context, "Заметка: ${ (note.title) } ", Toast.LENGTH_SHORT ).show()
             }
         }
 
@@ -214,7 +201,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         const val splashCreate = "Created splash screen"
     }
 }
-
 
     fun formatDateCreate (noteDate: String): String {
 
