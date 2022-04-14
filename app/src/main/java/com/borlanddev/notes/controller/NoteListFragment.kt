@@ -1,18 +1,17 @@
 package com.borlanddev.notes.controller
 
-import android.icu.text.MessageFormat.format
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +20,9 @@ import com.borlanddev.notes.helpers.SwipeToDeleteCallback
 import com.borlanddev.notes.model.NoteListViewModel
 import com.borlanddev.notes.model.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.appcompat.widget.Toolbar
 
 
 class NoteListFragment: Fragment(R.layout.fragment_list_note) {

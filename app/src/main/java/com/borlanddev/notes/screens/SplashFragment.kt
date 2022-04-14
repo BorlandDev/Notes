@@ -29,6 +29,8 @@ class SplashFragment: Fragment(R.layout.fragment_splash) {
                         exit = androidx.navigation.ui.R.anim.nav_default_exit_anim
                     }
 
+
+
                     // Кнопка назад не возвращает к Splash Screen
                     launchSingleTop = true
 
@@ -39,4 +41,10 @@ class SplashFragment: Fragment(R.layout.fragment_splash) {
                 )
             }, 2000)
         }
-    }
+
+
+
+
+
+
+}

@@ -6,10 +6,9 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.Note
 import com.borlanddev.notes.model.NoteDetailsViewModel
@@ -31,9 +30,10 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
 
         setHasOptionsMenu(true)
@@ -156,6 +156,11 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
                 true
             } // флаг - дальнейшая обработка менюшки не требуется
+
+            android.R.id.home -> {
+                findNavController().navigate(R.id.action_noteDetailsFragment2_to_noteListFragment)
+                true
+            }
 
             else -> return super.onOptionsItemSelected(item)
         }

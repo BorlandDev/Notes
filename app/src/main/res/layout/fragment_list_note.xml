@@ -8,6 +8,9 @@
     android:layout_height="match_parent"
     tools:context=".controller.MainActivity">
 
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/note_recycler_view"
 

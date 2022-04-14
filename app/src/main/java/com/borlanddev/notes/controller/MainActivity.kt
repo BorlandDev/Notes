@@ -2,11 +2,7 @@ package com.borlanddev.notes.controller
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.window.SplashScreen
-import androidx.appcompat.widget.Toolbar
-import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -18,7 +14,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration : AppBarConfiguration
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         navController = (supportFragmentManager.findFragmentById(R.id.navHostFragment)
                 as NavHostFragment).navController
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         setupActionBarWithNavController(navController)
@@ -38,7 +34,9 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
 
                 R.id.splashFragment -> supportActionBar?.hide()
-              /*R.id.ListFragment -> Проверять первый ли это запуск приложения .
+              R.id.noteListFragment -> supportActionBar?.hide()
+
+                  /* Проверять первый ли это запуск приложения .
               Показывать анимацию и вызвать функцию прослушки сети. Если запуск не первый, показывать
               анимацию под тулбаром и также слушать сеть.
               */
@@ -50,9 +48,13 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
     }
 
 
 
 
-}
+    }
+
+
+
