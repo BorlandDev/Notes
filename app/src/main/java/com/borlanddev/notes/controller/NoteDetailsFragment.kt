@@ -5,9 +5,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.EditText
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.onNavDestinationSelected
+import androidx.navigation.ui.setupWithNavController
 import com.borlanddev.notes.R
 import com.borlanddev.notes.model.Note
 import com.borlanddev.notes.model.NoteDetailsViewModel
@@ -34,8 +38,30 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
 
 
+        val navController = findNavController()
 
-        setHasOptionsMenu(true)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+
+        toolbar.setOnMenuItemClickListener {
+
+            // Дата заметки изменятся только если изменяли ее текст
+            if (currentTitle != note.title || currentText != note.description) {
+                note.date = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
+            }
+
+            noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
+            updateUI()
+            true
+        }
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
+
+
+
+        //setHasOptionsMenu(true)
+
 
         noteTitle = view.findViewById(R.id.note_title) as EditText
         noteText = view.findViewById(R.id.note_text) as EditText
@@ -116,42 +142,6 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
 
         // Добавление слушателя на Текст заметки
         noteText.addTextChangedListener(textWatcher)
-    }
-
-
-    // Вызывается когда возникает необходимость в меню
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-
-        // запонялем меню
-        inflater.inflate(R.menu.fragment_details_action, menu)
-    }
-
-    // Когда пользователь выбирает команду в меню фрагмент получает обратный вызов этой функции
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        // реагируем в зависимости от выбора команды в меню
-        return when (item.itemId) {
-
-            R.id.save_note_button -> {
-
-                // Дата заметки изменятся только если изменяли ее текст
-                if (currentTitle != note.title || currentText != note.description) {
-                    note.date = SimpleDateFormat("dd-MM-yyyy HH:mm").format(Date())
-                }
-
-                    noteDetailsViewModel.saveNote(note) // добавляем заметку в базу данных
-                    updateUI()
-                true
-            } // флаг - дальнейшая обработка менюшки не требуется
-
-            android.R.id.home -> {
-                findNavController().navigate(R.id.action_noteDetailsFragment2_to_noteListFragment)
-                true
-            }
-
-            else -> return super.onOptionsItemSelected(item)
-        }
     }
 
 

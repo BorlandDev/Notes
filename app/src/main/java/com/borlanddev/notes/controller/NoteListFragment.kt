@@ -1,6 +1,7 @@
 package com.borlanddev.notes.controller
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,21 +24,44 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.borlanddev.notes.helpers.imitationData
+import com.borlanddev.notes.model.NoteRepository
+import com.google.android.material.progressindicator.CircularProgressIndicator
 
 
 class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
     private lateinit var note: Note
-
     private var adapter: NoteAdapter? = NoteAdapter(emptyList())
+
     // Получаем ссылку на вью модель
     private val noteListViewModel: NoteListViewModel by lazy {
         ViewModelProviders.of(this).get(NoteListViewModel::class.java)
     }
 
 
+    val noteRepository = NoteRepository.get()
+
+    lateinit var roundProgressIndicator: CircularProgressIndicator
+
+
+
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        val navController = findNavController()
+
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        view.findViewById<Toolbar>(R.id.toolbar)
+            .setupWithNavController(navController, appBarConfiguration)
 
 
 
@@ -65,8 +89,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
            жизненным циклом другого компонента */
         noteListViewModel.noteListLiveData.observe(
 
-            viewLifecycleOwner
-        )   /* Первый параметр функции observe - Владелец ЖЦ.
+            viewLifecycleOwner)   /* Первый параметр функции observe - Владелец ЖЦ.
             (наблюдатель будет (жить) получать обновления данных столько,сколько живет Fragment) */
 
         /* Второй параметр, реализация Observer - наблюдатель (преобразовали SAM в лямбду).
@@ -77,9 +100,12 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
                 /* Когда все виджеты будут готовы и отрисованы на экране и выполнятся запросы из БД,
                          можно обновлять интерфейс. */
 
-                // Update IU
-                adapter = NoteAdapter(notes)
-                noteRecyclerView.adapter = adapter
+                if (notes.isNotEmpty()) {
+                    // Update IU
+                    adapter = NoteAdapter(notes)
+                    noteRecyclerView.adapter = adapter
+
+                }
             }
         }
 
@@ -213,4 +239,68 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         return if (noteDay == todayDate) noteHours else noteDay
 
     }
+
+
+
+
+
+
+
+
+
+//    fun startApp() {
+//
+//        val data = note
+//
+//        data.observe(this) { notes ->
+//
+//
+//            if (notes.isEmpty()) {
+//
+//                Thread.sleep(7000)
+//
+//                // БД пуста , первый запуск приложения
+//                // Прослушка сети
+//                // Анимация
+//
+//                //if (isOnline()) Log.i("appStart", "Мы в онлайне") else Log.i("appStart", "Оффлайн")
+//
+//
+//                Log.i("appStart", "Список пуст")
+//                // Имититация загрузки данных с сервера
+//                val imitationData = imitationData()
+//
+//    //                        if (imitationData.isEmpty()) Toast.makeText(this, "Нет данных",
+//    //                            Toast.LENGTH_LONG
+//    //                        ).apply {
+//    //                            setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+//    //                        }.show()
+//
+//                for (i in imitationData) .noteRepository.newNote(i)
+//            }
+//
+//
+//            if (notes.isNotEmpty()) {
+//                //   if (isOnline()) Log.i("appStart", "Мы в онлайне") else Log.i("appStart", "Оффлайн")
+//
+//                Log.i("appStart", "Список не пуст $notes")
+//            }
+//        }
+//
+//
+//    }
+//    }
+//
+//
+//
+//
+////
+////private fun isOnline (): Boolean {
+////    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+////
+////    val netInfo = connectivityManager.activeNetworkInfo
+////    return netInfo != null && netInfo.isConnectedOrConnecting
+////    }
+//
+
 
