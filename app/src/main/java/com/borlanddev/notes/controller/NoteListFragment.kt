@@ -1,18 +1,15 @@
 package com.borlanddev.notes.controller
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,11 +22,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.borlanddev.notes.helpers.imitationData
 import com.borlanddev.notes.model.NoteRepository
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.transition.platform.VisibilityAnimatorProvider
 
 
 class NoteListFragment: Fragment(R.layout.fragment_list_note) {
@@ -43,31 +40,36 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
     }
 
 
-    val noteRepository = NoteRepository.get()
+    private val noteRepository = NoteRepository.get()
 
-    lateinit var roundProgressIndicator: CircularProgressIndicator
-
-
-
-
+    private lateinit var roundProgressIndicator: CircularProgressIndicator
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.postDelayed( {
+            // анимация
+            if (noteListViewModel.noteListLiveData.value?.isEmpty() == true) {
+
+            roundProgressIndicator = view.findViewById(R.id.roundProgressIndicator) as CircularProgressIndicator
+            roundProgressIndicator.indicatorInset
+                startApp()
+            }
+        }, 5000)
+
 
 
         val navController = findNavController()
 
         val appBarConfiguration = AppBarConfiguration(navController.graph)
 
-        view.findViewById<Toolbar>(R.id.toolbar)
-            .setupWithNavController(navController, appBarConfiguration)
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+
+        appBarConfiguration.fallbackOnNavigateUpListener
 
 
-
-
-
-
+        toolbar.setupWithNavController(navController, appBarConfiguration)
 
 
         val fab = view.findViewById(R.id.new_note_FAB) as FloatingActionButton
@@ -89,7 +91,8 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
            жизненным циклом другого компонента */
         noteListViewModel.noteListLiveData.observe(
 
-            viewLifecycleOwner)   /* Первый параметр функции observe - Владелец ЖЦ.
+            viewLifecycleOwner
+        )   /* Первый параметр функции observe - Владелец ЖЦ.
             (наблюдатель будет (жить) получать обновления данных столько,сколько живет Fragment) */
 
         /* Второй параметр, реализация Observer - наблюдатель (преобразовали SAM в лямбду).
@@ -124,7 +127,6 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         }
 
 
-
         // Удаление элементов списка смахиванием
         val swipeToDeleteCallBack = object : SwipeToDeleteCallback() {
             val listNotes = noteListViewModel.noteListLiveData
@@ -149,16 +151,9 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         // Прикрепляем к ItemTouchHelper наш Recycler
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
         itemTouchHelper.attachToRecyclerView(noteRecyclerView)
+
+
     }
-
-
-
-
-
-
-
-
-
 
 
     // Холдер - ячейка (визуальный элемент списка, контейнер для наших данных)
@@ -173,7 +168,7 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
 
         init { // ставим слушателя на каждую вьюшку вьюХолдера
-            itemView.setOnClickListener (this)
+            itemView.setOnClickListener(this)
         }
 
         fun bind(note: Note) {
@@ -190,15 +185,15 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
             // Передаем айдишник выбранной заметки
             bundle.putSerializable("noteId", noteId)
-            findNavController().navigate(R.id.action_noteListFragment_to_noteDetailsFragment2, bundle)
-            }
+            findNavController().navigate(
+                R.id.action_noteListFragment_to_noteDetailsFragment,
+                bundle
+            )
         }
+    }
 
 
-
-
-    private inner class NoteAdapter (var notes: List<Note>)
-        : RecyclerView.Adapter<NoteHolder>() {
+    private inner class NoteAdapter(var notes: List<Note>) : RecyclerView.Adapter<NoteHolder>() {
 
         // функция отвечает за создание вьюХолдера на дисплее
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
@@ -218,72 +213,70 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
             // заполняем поля по каждой позиции холдера в списке (связываем данные с вьюХолдером)
             holder.bind(note)
         }
+
         // утилизатор узнает заранее сколько элементов ему нужно будет отобразить
         override fun getItemCount() = notes.size
     }
 
 
-    companion object {
-        const val splashCreate = "Created splash screen"
-    }
-}
+    private fun startApp() {
 
-    fun formatDateCreate (noteDate: String): String {
+        val data = noteListViewModel.noteListLiveData
 
-        val noteDay = noteDate.split(" ")[0] // берем дату заметки
-        val noteHours = noteDate.split(" ")[1] // берем часы и минуты заметки
+        data.observe( viewLifecycleOwner) { notes ->
 
-        val todayDate = SimpleDateFormat("dd-MM-yyyy").format(Date()) // берем текущую дату
+            if (notes.isEmpty()) {
 
-        // Если заметка сделана сегодня то выводим HH:mm иначе dd-MM-yyyy
-        return if (noteDay == todayDate) noteHours else noteDay
+                Log.i("appStart", "Список пуст")
+                // Имититация загрузки данных с сервера
+                val imitationData = imitationData()
 
-    }
+                for (i in imitationData) noteRepository.newNote(i)
+            }
 
+            if (notes.isNotEmpty())
+                Log.i("appStart", "Список не пуст $notes")
 
-
-
-
-
+            }
+        }
 
 
 
-//    fun startApp() {
-//
-//        val data = note
-//
-//        data.observe(this) { notes ->
-//
-//
-//            if (notes.isEmpty()) {
-//
-//                Thread.sleep(7000)
-//
-//                // БД пуста , первый запуск приложения
-//                // Прослушка сети
-//                // Анимация
-//
+            companion object {
+            const val splashCreate = "Created splash screen"
+            }
+        }
+
+
+
+
+
+
+        fun formatDateCreate(noteDate: String): String {
+
+            val noteDay = noteDate.split(" ")[0] // берем дату заметки
+            val noteHours = noteDate.split(" ")[1] // берем часы и минуты заметки
+
+            val todayDate = SimpleDateFormat("dd-MM-yyyy").format(Date()) // берем текущую дату
+
+            // Если заметка сделана сегодня то выводим HH:mm иначе dd-MM-yyyy
+            return if (noteDay == todayDate) noteHours else noteDay
+
+        }
+
+
+
+
+
+
+
+
 //                //if (isOnline()) Log.i("appStart", "Мы в онлайне") else Log.i("appStart", "Оффлайн")
 //
 //
-//                Log.i("appStart", "Список пуст")
-//                // Имититация загрузки данных с сервера
-//                val imitationData = imitationData()
 //
-//    //                        if (imitationData.isEmpty()) Toast.makeText(this, "Нет данных",
-//    //                            Toast.LENGTH_LONG
-//    //                        ).apply {
-//    //                            setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-//    //                        }.show()
-//
-//                for (i in imitationData) .noteRepository.newNote(i)
-//            }
-//
-//
-//            if (notes.isNotEmpty()) {
 //                //   if (isOnline()) Log.i("appStart", "Мы в онлайне") else Log.i("appStart", "Оффлайн")
 //
-//                Log.i("appStart", "Список не пуст $notes")
 //            }
 //        }
 //

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.borlanddev.notes.R
@@ -55,9 +56,9 @@ class NoteDetailsFragment: Fragment(R.layout.fragment_details_note) {
             updateUI()
             true
         }
+
+
         toolbar.setupWithNavController(navController, appBarConfiguration)
-
-
 
 
         //setHasOptionsMenu(true)
