@@ -1,13 +1,13 @@
 package com.borlanddev.notes.helpers
 
-import android.widget.Toast
 import com.borlanddev.notes.model.Note
 import java.util.*
 
 
  fun imitationData(): List<Note> {
 
-     return listOf(
+
+    return listOf(
 
         Note(UUID.randomUUID(), "Написать тестовое задание для фирмы 4k Soft Житомир", "", "06-04-22 22:50"),
         Note(UUID.randomUUID(), "ДР Игоря", "Поздравить", "13-01-22 18:00"),

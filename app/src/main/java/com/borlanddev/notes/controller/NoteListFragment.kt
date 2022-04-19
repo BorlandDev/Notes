@@ -1,6 +1,8 @@
 package com.borlanddev.notes.controller
 
-import android.opengl.Visibility
+import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,12 +23,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.borlanddev.notes.helpers.imitationData
 import com.borlanddev.notes.model.NoteRepository
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.google.android.material.transition.platform.VisibilityAnimatorProvider
+import com.google.android.material.progressindicator.LinearProgressIndicator
 
 
 class NoteListFragment: Fragment(R.layout.fragment_list_note) {
@@ -42,21 +45,41 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
 
     private val noteRepository = NoteRepository.get()
 
-    private lateinit var roundProgressIndicator: CircularProgressIndicator
+    lateinit var roundProgressIndicator: CircularProgressIndicator
+    lateinit var linearProgressIndicator: LinearProgressIndicator
+    lateinit var textOffline: TextView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.postDelayed( {
-            // анимация
-            if (noteListViewModel.noteListLiveData.value?.isEmpty() == true) {
+        linearProgressIndicator = view.findViewById(R.id.linearProgressIndicator) as LinearProgressIndicator
+        roundProgressIndicator = view.findViewById(R.id.roundProgressIndicator) as CircularProgressIndicator
+        textOffline = view.findViewById(R.id.textOffline) as TextView
 
-            roundProgressIndicator = view.findViewById(R.id.roundProgressIndicator) as CircularProgressIndicator
-            roundProgressIndicator.indicatorInset
-                startApp()
+        view.postDelayed( {
+
+            // видимо для проверки онлайна нужно использовать Broadcast receiver
+
+            while (isOnline()) {
+                Log.i("appStart", "Мы в онлайне")
+
+                if (noteListViewModel.noteListLiveData.value?.isEmpty() == true)
+                    startApp()
+
+                break
             }
+
+
+
+                Log.i("appStart", "Оффлайн")
+                textOffline.setText(R.string.no_internet)
+
+
+
         }, 5000)
+
+
 
 
 
@@ -241,8 +264,16 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         }
 
 
+    private fun isOnline (): Boolean {
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-            companion object {
+        val netInfo = connectivityManager.activeNetworkInfo
+        return netInfo != null && netInfo.isConnectedOrConnecting
+    }
+
+
+
+    companion object {
             const val splashCreate = "Created splash screen"
             }
         }
@@ -263,37 +294,3 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
             return if (noteDay == todayDate) noteHours else noteDay
 
         }
-
-
-
-
-
-
-
-
-//                //if (isOnline()) Log.i("appStart", "Мы в онлайне") else Log.i("appStart", "Оффлайн")
-//
-//
-//
-//                //   if (isOnline()) Log.i("appStart", "Мы в онлайне") else Log.i("appStart", "Оффлайн")
-//
-//            }
-//        }
-//
-//
-//    }
-//    }
-//
-//
-//
-//
-////
-////private fun isOnline (): Boolean {
-////    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-////
-////    val netInfo = connectivityManager.activeNetworkInfo
-////    return netInfo != null && netInfo.isConnectedOrConnecting
-////    }
-//
-
-
