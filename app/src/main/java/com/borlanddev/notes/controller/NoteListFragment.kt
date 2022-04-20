@@ -60,20 +60,20 @@ class NoteListFragment: Fragment(R.layout.fragment_list_note) {
         view.postDelayed( {
 
             // видимо для проверки онлайна нужно использовать Broadcast receiver
+            if (!isOnline()) textOffline.setText(R.string.no_internet)
 
             while (isOnline()) {
+
                 Log.i("appStart", "Мы в онлайне")
 
                 if (noteListViewModel.noteListLiveData.value?.isEmpty() == true)
                     startApp()
 
-                break
+
             }
 
 
-
                 Log.i("appStart", "Оффлайн")
-                textOffline.setText(R.string.no_internet)
 
 
 
